@@ -1,0 +1,69 @@
+/*
+    Document   : style.css
+    Created on : 2016-03-29 05:16 PM
+    Author     : Misacorp
+    Description:
+    Purpose of the stylesheet follows.
+    To change this template use Tools | Templates.
+*/
+
+root {
+    display: block;
+}
+
+body {
+    font-family: Roboto;
+}
+
+.sliderContainer {
+    margin-top: 1em;
+    margin-bottom: 3em;
+    margin-left: auto;
+    margin-right: auto;
+    width: 40%;
+    min-width: 200px;
+    }
+
+#start {
+    display:block;
+    }
+
+#stop {
+    display: none;
+    }
+
+#reset {
+    display: block;
+    }
+    
+.counter {
+    font-size: 12em;
+    text-align: center;
+    color: #424242;
+    
+    margin: 1em;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.bigbutton {
+    width: 200px;
+    height: 200px;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: blue;
+    }
+    
+.button {
+    margin: 1em;
+    margin-left: auto;
+    margin-right: auto;
+    }
+    
+.stats {
+    font-weight: 500;
+    }
+    
+.page-content {
+    margin: 10px;
+    }
