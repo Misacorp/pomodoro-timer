@@ -1,11 +1,3 @@
-/**
-* Created with pomodoro-timer.
-* User: Misacorp
-* Date: 2016-03-29
-* Time: 05:15 PM
-* To change this template use Tools | Templates.
-*/
-
 var timer = document.getElementById("timer");
 var start = document.getElementById("start");
 var stop = document.getElementById("stop");
@@ -49,7 +41,7 @@ var resetTimer = function() {
     switchButtons("start","stop");
     setDuration();
     timeLeft = duration;
-    timer.innerHTML = timeLeft;
+    updateTimer(timeLeft);
 };
     
 function countdown() {
@@ -63,7 +55,7 @@ function countdown() {
         notifyMe();
         canNotify = false;
         }
-    timer.innerHTML = timeLeft;
+    updateTimer(timeLeft);
     }
     
 function switchButtons(id1,id2) {
@@ -79,38 +71,32 @@ function switchButtons(id1,id2) {
             } 
     }
     
+function updateTimer(time) {
+    var ret = time.toString().toHHMMSS();
+    timer.innerHTML = ret;
+    return ret;
+    }
+    
+    
+// Seconds to timecode functionality
+String.prototype.toHHMMSS = function () {
+    var sec_num = parseInt(this, 10); // don't forget the second param
+    var hours   = Math.floor(sec_num / 3600);
+    var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
+    var seconds = sec_num - (hours * 3600) - (minutes * 60);
+
+    if (hours   < 10) {hours   = "0"+hours;}
+    if (minutes < 10) {minutes = "0"+minutes;}
+    if (seconds < 10) {seconds = "0"+seconds;}
+    var time    = hours+':'+minutes+':'+seconds;
+    return time;
+};
+    
 // request permission on page load
 document.addEventListener('DOMContentLoaded', function () {
   if (Notification.permission !== "granted")
     Notification.requestPermission();
 });
-
-function notifyMe() {
-  if (!Notification) {
-    alert('Desktop notifications not available in your browser. Try Chromium.'); 
-    return;
-  }
-    if(canNotify) {
-      if (Notification.permission !== "granted")
-        Notification.requestPermission();
-      else {
-        var notification = new Notification('Timer ended!', {
-          icon: 'http://cdn.sstatic.net/stackexchange/img/logos/so/so-icon.png',
-          body: "Best regards: Bilbo Baggins, Yolo Swaggins and Pete.",
-        });
-
-        playSound("headshot_MP3");
-        }
-    }
-    
-    notification.onclick = function () {
-        window.focus();
-    };
-  }
-
-function playSound(filename){   
-                document.getElementById("sound").innerHTML='<audio autoplay="autoplay"><source src="' + filename + '.mp3" type="audio/mpeg" /><source src="' + filename + '.ogg" type="audio/ogg" /><embed hidden="true" autostart="true" loop="false" src="' + filename +'.mp3" /></audio>';
-            }
 
 function setDuration(dur) {
     if(dur !== undefined) {
@@ -118,7 +104,7 @@ function setDuration(dur) {
         return;
     }
     else
-        duration = durationSlider.value * 60;
+        duration = durationSlider.value;
 }
 
 /*  -----------------------------  */
@@ -137,14 +123,16 @@ reset.onclick = function() {
     };
 
 durationSlider.oninput = function updateTimer() {
-    timer.innerHTML = durationSlider.value * 60;
+    // Using robust format to avoid call limit overflow
+    timer.innerHTML = durationSlider.value.toString().toHHMMSS();
 };
 
 durationSlider.onchange = function updateDuration() {
     setDuration();
     timeLeft = duration;
+    updateTimer(durationSlider.value);
 };
 
 window.onload = function yolo() {
-    timer.innerHTML = durationSlider.value * 60;
+    updateTimer(durationSlider.value);
 };
