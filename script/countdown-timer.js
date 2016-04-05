@@ -6,8 +6,8 @@ var durationSlider = document.getElementById("durationSlider");
 
 var timerRunning = false;       // make stuff work with this instead of all the ugly tricks in place!
 
-var counter;
-var duration = durationSlider.value * 60;
+var counter;    //  Clock engine instance
+var duration = durationSlider.value;
 var timeLeft = duration;
 var canNotify = false;
 
@@ -20,6 +20,7 @@ var startTimer = function() {
     document.getElementById("timersStarted").innerHTML = timersStarted;
     switchButtons("start","stop");
     if(timeLeft > 0) {
+        timerRunning = true;
         counter = setInterval(countdown,1000);      //  Sets timer loop to run once every second
         console.log("Started timer");
         canNotify = true;
@@ -29,19 +30,23 @@ var startTimer = function() {
     }
     };
 
-var stopTimer = function() {
-    switchButtons("start","stop");
-    console.log("Stopped timer");
+var pauseTimer = function() {
     clearInterval(counter);
+    switchButtons("start","stop");
+    timerRunning = false;
+    console.log("Stopped timer");
     };
     
 var resetTimer = function() {
-    console.log("Reset timer");
     clearInterval(counter);
-    switchButtons("start","stop");
+    if(timerRunning) {     //  Takes into account if timer has run out and button has switched on its own.
+        switchButtons("start","stop");
+        }
     setDuration();
     timeLeft = duration;
     updateTimer(timeLeft);
+    timerRunning = false;
+    console.log("Timer reset");
 };
     
 function countdown() {
@@ -50,10 +55,10 @@ function countdown() {
     document.getElementById("secondsTimed").innerHTML = secondsTimed;
     console.log(timeLeft);
     if(timeLeft <= 0) {
-        console.log("Time's up!");
-        stopTimer();
+        pauseTimer();
         notifyMe();
         canNotify = false;
+        console.log("Time's up!");
         }
     updateTimer(timeLeft);
     }
@@ -115,7 +120,7 @@ start.onclick = function() {
     };
 
 stop.onclick = function() {
-    stopTimer();
+    pauseTimer();
     };
 
 reset.onclick = function() {
