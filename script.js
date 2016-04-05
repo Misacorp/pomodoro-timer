@@ -15,8 +15,9 @@ var durationSlider = document.getElementById("durationSlider");
 var timerRunning = false;       // make stuff work with this instead of all the ugly tricks in place!
 
 var counter;
-var duration = durationSlider.value;
+var duration = durationSlider.value * 60;
 var timeLeft = duration;
+var canNotify = false;
 
 //  STATS
 var timersStarted = 0;
@@ -29,6 +30,7 @@ var startTimer = function() {
     if(timeLeft > 0) {
         counter = setInterval(countdown,1000);      //  Sets timer loop to run once every second
         console.log("Started timer");
+        canNotify = true;
         }
     else {
         console.log("Timer at 0. Please reset.");
@@ -57,8 +59,9 @@ function countdown() {
     console.log(timeLeft);
     if(timeLeft <= 0) {
         console.log("Time's up!");
-        notifyMe();
         stopTimer();
+        notifyMe();
+        canNotify = false;
         }
     timer.innerHTML = timeLeft;
     }
@@ -87,22 +90,27 @@ function notifyMe() {
     alert('Desktop notifications not available in your browser. Try Chromium.'); 
     return;
   }
+    if(canNotify) {
+      if (Notification.permission !== "granted")
+        Notification.requestPermission();
+      else {
+        var notification = new Notification('Timer ended!', {
+          icon: 'http://cdn.sstatic.net/stackexchange/img/logos/so/so-icon.png',
+          body: "Best regards: Bilbo Baggins, Yolo Swaggins and Pete.",
+        });
 
-  if (Notification.permission !== "granted")
-    Notification.requestPermission();
-  else {
-    var notification = new Notification('Timer ended!', {
-      icon: 'http://cdn.sstatic.net/stackexchange/img/logos/so/so-icon.png',
-      body: "Best regards: Bilbo Baggins, Yolo Swaggins and Pete.",
-    });
-
+        playSound("headshot_MP3");
+        }
+    }
+    
     notification.onclick = function () {
         window.focus();
     };
-
   }
 
-}
+function playSound(filename){   
+                document.getElementById("sound").innerHTML='<audio autoplay="autoplay"><source src="' + filename + '.mp3" type="audio/mpeg" /><source src="' + filename + '.ogg" type="audio/ogg" /><embed hidden="true" autostart="true" loop="false" src="' + filename +'.mp3" /></audio>';
+            }
 
 function setDuration(dur) {
     if(dur !== undefined) {
