@@ -45,7 +45,7 @@ var resetTimer = function() {
     console.log("Reset timer");
     clearInterval(counter);
     switchButtons("start","stop");
-    duration = durationSlider.value;
+    setDuration();
     timeLeft = duration;
     timer.innerHTML = timeLeft;
 };
@@ -57,6 +57,7 @@ function countdown() {
     console.log(timeLeft);
     if(timeLeft <= 0) {
         console.log("Time's up!");
+        notifyMe();
         stopTimer();
         }
     timer.innerHTML = timeLeft;
@@ -74,7 +75,43 @@ function switchButtons(id1,id2) {
            e2.style.display = 'block';
             } 
     }
+    
+// request permission on page load
+document.addEventListener('DOMContentLoaded', function () {
+  if (Notification.permission !== "granted")
+    Notification.requestPermission();
+});
 
+function notifyMe() {
+  if (!Notification) {
+    alert('Desktop notifications not available in your browser. Try Chromium.'); 
+    return;
+  }
+
+  if (Notification.permission !== "granted")
+    Notification.requestPermission();
+  else {
+    var notification = new Notification('Timer ended!', {
+      icon: 'http://cdn.sstatic.net/stackexchange/img/logos/so/so-icon.png',
+      body: "Best regards: Bilbo Baggins, Yolo Swaggins and Pete.",
+    });
+
+    notification.onclick = function () {
+        window.focus();
+    };
+
+  }
+
+}
+
+function setDuration(dur) {
+    if(dur !== undefined) {
+        duration = dur;
+        return;
+    }
+    else
+        duration = durationSlider.value * 60;
+}
 
 /*  -----------------------------  */
 
@@ -92,14 +129,14 @@ reset.onclick = function() {
     };
 
 durationSlider.oninput = function updateTimer() {
-    timer.innerHTML = durationSlider.value;
+    timer.innerHTML = durationSlider.value * 60;
 };
 
 durationSlider.onchange = function updateDuration() {
-    duration = durationSlider.value;
+    setDuration();
     timeLeft = duration;
 };
 
 window.onload = function yolo() {
-    timer.innerHTML = durationSlider.value;
+    timer.innerHTML = durationSlider.value * 60;
 };
