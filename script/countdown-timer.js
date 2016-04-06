@@ -3,6 +3,7 @@ var start = document.getElementById("start");
 var stop = document.getElementById("stop");
 var reset = document.getElementById("reset");
 var durationSlider = document.getElementById("durationSlider");
+var timeInTitleButton = document.getElementById("switch-1");
 
 var timerRunning = false;       // make stuff work with this instead of all the ugly tricks in place!
 
@@ -10,6 +11,7 @@ var counter;    //  Clock engine instance
 var duration = durationSlider.value;
 var timeLeft = duration;
 var canNotify = false;
+var showTimeInTitle = true;
 
 //  STATS
 var timersStarted = 0;
@@ -61,6 +63,9 @@ function countdown() {
         console.log("Time's up!");
         }
     updateTimer(timeLeft);
+    if(showTimeInTitle) {
+        document.title = updateTimer(timeLeft);
+        }   
     }
     
 function switchButtons(id1,id2) {
@@ -137,6 +142,13 @@ durationSlider.onchange = function updateDuration() {
     timeLeft = duration;
     updateTimer(durationSlider.value);
 };
+
+timeInTitleButton.onclick = function() {
+    showTimeInTitle = timeInTitleButton.checked;
+    if(!showTimeInTitle) {
+        document.title = "Timer";
+        }
+    };
 
 window.onload = function yolo() {
     updateTimer(durationSlider.value);
